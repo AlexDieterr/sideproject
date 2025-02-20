@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "../styles/RateForm.css";
 
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
+
 const RateForm = ({ onReviewAdded }) => {
   const [name, setName] = useState("");
   const [rating, setRating] = useState("");
@@ -17,7 +19,7 @@ const RateForm = ({ onReviewAdded }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:5001/api/reviews", {
+      const response = await fetch(`${API_BASE_URL}/api/reviews`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

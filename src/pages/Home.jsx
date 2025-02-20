@@ -4,6 +4,9 @@ import PaymentForm from "../components/PaymentForm";
 import Footer from "../components/Footer"; // ✅ Import Footer
 import "./Home.css";
 
+// ✅ Fix: Use Vite's import.meta.env instead of process.env for React
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
+
 const Home = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchedName, setSearchedName] = useState("");
@@ -14,7 +17,8 @@ const Home = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch("http://localhost:5001/api/reviews");
+        const response = await fetch(`${API_BASE_URL}/api/reviews`);
+        if (!response.ok) throw new Error("Failed to fetch reviews.");
         const data = await response.json();
         setReviews(data);
       } catch (error) {
@@ -35,7 +39,8 @@ const Home = () => {
     setSearchedName(query);
 
     try {
-      const response = await fetch(`http://localhost:5001/api/reviews/search?name=${query}`);
+      const response = await fetch(`${API_BASE_URL}/api/reviews/search?name=${query}`);
+      if (!response.ok) throw new Error("Search request failed.");
       const data = await response.json();
       setSearchResults(data);
     } catch (error) {
@@ -58,27 +63,27 @@ const Home = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5001/api/reviews", {
+      const response = await fetch(`${API_BASE_URL}/api/reviews`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reviewData),
       });
 
+      if (!response.ok) throw new Error("Failed to submit review.");
       const data = await response.json();
-      if (response.ok) {
-        setSearchResults([...searchResults, data.review]);
-        setNewReview({ rating: "", tag: "", review: "" });
-        alert("Review submitted!");
-      } else {
-        alert("Error submitting review: " + data.error);
-      }
+
+      setSearchResults([...searchResults, data.review]);
+      setNewReview({ rating: "", tag: "", review: "" });
+      alert("Review submitted successfully!");
     } catch (error) {
-      console.error("Error sending review:", error);
+      console.error("Error submitting review:", error);
+      alert("Error submitting review. Try again.");
     }
   };
 
   return (
     <div className="home-container">
+      {/* ✅ Clicking resets the page to its initial state */}
       <h1 className="main-title" onClick={() => window.location.reload()}>
         GauchoGirls
       </h1>
@@ -94,16 +99,16 @@ const Home = () => {
             {searchResults.length === 0 ? (
               <p>No results found</p>
             ) : (
-              searchResults.map((review) => (
-                <div key={review.id} className="review-card">
+              searchResults.map((review, index) => (
+                <div key={review._id || review.id || `review-${index}`} className="review-card">
                   <h3>{review.name}</h3>
                   <p>Rating: {review.rating}/10</p>
                   <p>Tag: {review.tag}</p>
                   <p>{review.review}</p>
-
+              
                   <button
                     className="pay-button"
-                    onClick={() => setSelectedReviewId(review.id)}
+                    onClick={() => setSelectedReviewId(review._id)}
                   >
                     Pay Now ($2.99 to Remove)
                   </button>
@@ -126,6 +131,8 @@ const Home = () => {
               placeholder="Rating (1-10)"
               value={newReview.rating}
               onChange={(e) => setNewReview({ ...newReview, rating: e.target.value })}
+              min="1"
+              max="10"
               required
             />
             <input

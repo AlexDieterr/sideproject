@@ -37,7 +37,7 @@ const reviewSchema = new mongoose.Schema({
   rating: Number,
   tag: String,
   review: String,
-});
+}, { timestamps: true }); 
 
 const Review = mongoose.model("Review", reviewSchema);
 
@@ -91,8 +91,8 @@ app.post("/api/pay", async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://yourfrontendurl.com/success?ratingId=${ratingId}`,
-      cancel_url: "http://yourfrontendurl.com/",
+      success_url: `http://localhost:5173/`,
+      cancel_url: "http://localhost:5173/",
     });
 
     res.json({ url: session.url });
