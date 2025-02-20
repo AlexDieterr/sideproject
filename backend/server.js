@@ -3,7 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const { v4: uuidv4 } = require("uuid");
+const { randomUUID } = require("crypto");
 
 dotenv.config();
 const app = express();
