@@ -1,14 +1,27 @@
+require("dotenv").config(); // ✅ Ensure environment variables are loaded FIRST
+
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { randomUUID } = require("crypto");
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// ✅ Ensure Stripe Key is Loaded
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.error("❌ STRIPE_SECRET_KEY is missing! Check your .env file.");
+  process.exit(1);
+}
+
+// ✅ Ensure MongoDB Connection String is Loaded
+if (!process.env.MONGO_URI) {
+  console.error("❌ MONGO_URI is missing! Check your .env file.");
+  process.exit(1);
+}
+
+// ✅ Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -50,18 +63,33 @@ app.post("/api/reviews", async (req, res) => {
     return res.status(400).json({ error: "All fields required." });
   }
 
-  const newReview = new Review({ name, rating, tag, review });
-  await newReview.save();
-  res.json({ message: "Review added!", review: newReview });
+  try {
+    const newReview = new Review({ name, rating, tag, review });
+    await newReview.save();
+    res.json({ message: "Review added!", review: newReview });
+  } catch (error) {
+    console.error("❌ Error adding review:", error);
+    res.status(500).json({ error: "Failed to add review" });
+  }
 });
 
-// ✅ Stripe payment route
+// ✅ Stripe Payment Route
 app.post("/api/pay", async (req, res) => {
   const { ratingId } = req.body;
+
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: [{ price_data: { currency: "usd", product_data: { name: `Remove Review #${ratingId}` }, unit_amount: 299 }, quantity: 1 }],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: { name: `Remove Review #${ratingId}` },
+            unit_amount: 29900, // $2.99 in cents
+          },
+          quantity: 1,
+        },
+      ],
       mode: "payment",
       success_url: `http://yourfrontendurl.com/success?ratingId=${ratingId}`,
       cancel_url: "http://yourfrontendurl.com/",
@@ -69,20 +97,29 @@ app.post("/api/pay", async (req, res) => {
 
     res.json({ url: session.url });
   } catch (error) {
-    console.error("Stripe Error:", error);
-    res.status(500).json({ error: "Payment failed" });
+    console.error("❌ Stripe Error:", error);
+    res.status(500).json({ error: "Payment processing failed" });
   }
 });
 
-// ✅ Delete review after successful payment
+// ✅ Delete Review After Successful Payment
 app.post("/api/reviews/delete", async (req, res) => {
   const { ratingId } = req.body;
-  const deleted = await Review.findByIdAndDelete(ratingId);
-  if (deleted) res.json({ message: "Review deleted" });
-  else res.status(404).json({ error: "Review not found" });
+
+  try {
+    const deleted = await Review.findByIdAndDelete(ratingId);
+    if (deleted) {
+      res.json({ message: "Review deleted successfully" });
+    } else {
+      res.status(404).json({ error: "Review not found" });
+    }
+  } catch (error) {
+    console.error("❌ Error deleting review:", error);
+    res.status(500).json({ error: "Failed to delete review" });
+  }
 });
 
-// ✅ Start the server
+// ✅ Start the Server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
