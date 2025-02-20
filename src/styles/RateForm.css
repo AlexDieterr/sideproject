@@ -1,0 +1,45 @@
+.rate-form-container {
+    max-width: 400px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .rate-form input,
+  .rate-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .rate-form textarea {
+    height: 100px;
+    resize: none;
+  }
+  
+  .rate-form button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  .rate-form button:hover {
+    background: #0056b3;
+  }
+  
+  .message {
+    color: green;
+    font-weight: bold;
+  }

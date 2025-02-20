@@ -1,0 +1,37 @@
+/* Search Bar Wrapper */
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 400px; /* Prevents it from stretching across the screen */
+    padding: 10px;
+  }
+  
+  /* Input Field */
+  .search-form input {
+    flex: 1;
+    width: 250px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  /* Button */
+  .search-form button {
+    padding: 10px 15px;
+    margin-left: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .search-form button:hover {
+    background: #0056b3;
+  }

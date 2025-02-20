@@ -1,0 +1,61 @@
+/* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  text-align: center;
+}
+
+/* Search Bar Styling */
+.search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  max-width: 400px;
+}
+
+.search-form input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 250px;
+}
+
+.search-form button {
+  padding: 8px 15px;
+  margin-left: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-form button:hover {
+  background: #0056b3;
+}
+
+/* Review List */
+ul {
+  list-style-type: none;
+  padding: 0;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+ul li {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Leaderboard Styling */
+h3 {
+  margin-top: 20px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
