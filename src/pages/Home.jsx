@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Search from "../components/Search";
 import PaymentForm from "../components/PaymentForm";
+import Footer from "../components/Footer"; // ✅ Import Footer
 import "./Home.css";
 
 const Home = () => {
@@ -78,7 +79,6 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* Clicking this title will refresh the page, resetting everything */}
       <h1 className="main-title" onClick={() => window.location.reload()}>
         GauchoGirls
       </h1>
@@ -157,6 +157,9 @@ const Home = () => {
           </div>
         ))}
       </div>
+
+      {/* ✅ Add Footer Here */}
+      <Footer />
     </div>
   );
 };
