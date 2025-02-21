@@ -1,36 +1,26 @@
 require("dotenv").config();
-
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
-console.log("✅ ENV VARIABLES LOADED:");
-console.log("PORT:", process.env.PORT);
-console.log("MONGO_URI:", process.env.MONGO_URI ? "✅ Loaded" : "❌ Not Loaded");
-console.log("STRIPE_SECRET_KEY:", process.env.STRIPE_SECRET_KEY ? "✅ Loaded" : "❌ Not Loaded");
-console.log("FRONTEND_URL:", process.env.FRONTEND_URL ? "✅ Loaded" : "❌ Not Loaded");
-
-// Exit if .env is missing
-if (!process.env.PORT || !process.env.MONGO_URI || !process.env.STRIPE_SECRET_KEY) {
-  console.error("❌ Missing environment variables! Check .env file.");
-  process.exit(1); // Stop the server
-}
+console.log("🔑 Using STRIPE_SECRET_KEY:", process.env.STRIPE_SECRET_KEY);
+console.log("✅ Live Mode:", process.env.STRIPE_SECRET_KEY.startsWith("sk_live") ? "✅ Yes" : "❌ No");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const { randomUUID } = require("crypto");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-// ✅ Ensure Stripe Key is Loaded
-if (!process.env.STRIPE_SECRET_KEY) {
-  console.error("❌ STRIPE_SECRET_KEY is missing! Check your .env file.");
-  process.exit(1);
-}
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "connect-src 'self' https://sideproject-kbo3.onrender.com https://api.stripe.com;"
+  );
+  next();
+});
 
-// ✅ Ensure MongoDB Connection String is Loaded
-if (!process.env.MONGO_URI) {
-  console.error("❌ MONGO_URI is missing! Check your .env file.");
+if (!process.env.PORT || !process.env.MONGO_URI || !process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+  console.error("❌ Missing environment variables! Check .env file.");
   process.exit(1);
 }
 
@@ -40,8 +30,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // 🔹 Connect to MongoDB Atlas
-mongoose
-  .connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
@@ -57,7 +46,7 @@ const Review = mongoose.model("Review", reviewSchema);
 
 // ✅ GET all reviews
 app.get("/api/reviews", async (req, res) => {
-  const reviews = await Review.find().sort({ createdAt: -1 }); // 🔹 Sort by most recent
+  const reviews = await Review.find().sort({ createdAt: -1 });
   res.json(reviews);
 });
 
@@ -70,7 +59,7 @@ app.get("/api/reviews/search", async (req, res) => {
   res.json(filteredReviews);
 });
 
-// ✅ POST a new review (Store in Database)
+// ✅ POST a new review
 app.post("/api/reviews", async (req, res) => {
   const { name, rating, tag, review } = req.body;
   if (!name || !rating || !tag || !review) {
@@ -86,23 +75,16 @@ app.post("/api/reviews", async (req, res) => {
     res.status(500).json({ error: "Failed to add review" });
   }
 });
+
+// ✅ Payment Route
 app.post("/api/pay", async (req, res) => {
+  console.log("🔑 STRIPE_SECRET_KEY in /api/pay:", process.env.STRIPE_SECRET_KEY);
+  console.log("🔍 Stripe Key Being Used:", stripe._api.auth);
+
   const { ratingId } = req.body;
-  console.log("🚀 Received a request to /api/pay");
-  console.log("🚀 Received a request to /api/pay");
-
-  console.log("🚀 Received payment request for ratingId:", ratingId); // ✅ Log received ratingId
-
-  if (!ratingId) {
-    console.error("❌ Missing ratingId");
-    return res.status(400).json({ error: "Missing ratingId" });
-  }
+  if (!ratingId) return res.status(400).json({ error: "Missing ratingId" });
 
   try {
-    const unitAmount = 99; // ✅ Should be 99 for $0.99
-
-    console.log("💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰💰 Stripe unit_amount before sending:", unitAmount); // ✅ Log amount
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -110,41 +92,31 @@ app.post("/api/pay", async (req, res) => {
           price_data: {
             currency: "usd",
             product_data: { name: "Remove Review" },
-            unit_amount: 99, // $0.99
+            unit_amount: 99,
           },
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${process.env.FRONTEND_URL}/success?ratingId=${ratingId}`,
+      success_url: `${process.env.FRONTEND_URL}/success`,
       cancel_url: `${process.env.FRONTEND_URL}/cancel`,
-      metadata: { ratingId },
     });
 
-    console.log("✅ Stripe Session Created! Redirecting to:", session.url);
     res.json({ url: session.url });
   } catch (error) {
     console.error("❌ Stripe Checkout Error:", error);
     res.status(500).json({ error: "Failed to create payment session" });
   }
 });
+
 // ✅ DELETE review after payment success
 app.post("/api/reviews/delete", async (req, res) => {
   const { ratingId } = req.body;
-  
-  if (!ratingId) {
-    return res.status(400).json({ error: "Missing ratingId" });
-  }
+  if (!ratingId) return res.status(400).json({ error: "Missing ratingId" });
 
   try {
     const deleted = await Review.findByIdAndDelete(ratingId);
-    if (deleted) {
-      console.log("✅ Review deleted:", deleted); // ✅ Log this
-      res.json({ message: "Review deleted successfully" });
-    } else {
-      console.error("❌ Review not found");
-      res.status(404).json({ error: "Review not found" });
-    }
+    res.json({ message: deleted ? "Review deleted successfully" : "Review not found" });
   } catch (error) {
     console.error("❌ Error deleting review:", error);
     res.status(500).json({ error: "Failed to delete review" });
@@ -157,7 +129,7 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     console.error("❌ Webhook signature verification failed:", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -165,16 +137,12 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    const ratingId = session.metadata.ratingId;
+    const ratingId = session.metadata?.ratingId;
 
     if (ratingId) {
       try {
         const deleted = await Review.findByIdAndDelete(ratingId);
-        if (deleted) {
-          console.log(`✅ Review ${ratingId} deleted successfully`);
-        } else {
-          console.error(`❌ Review ${ratingId} not found`);
-        }
+        console.log(deleted ? `✅ Review ${ratingId} deleted successfully` : `❌ Review ${ratingId} not found`);
       } catch (error) {
         console.error(`❌ Error deleting review: ${error.message}`);
       }
@@ -183,6 +151,9 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
 
   res.status(200).json({ received: true });
 });
+
+// ✅ Convert raw body for other routes
+app.use(bodyParser.json());
 
 // ✅ Start the Server
 app.listen(PORT, () => {

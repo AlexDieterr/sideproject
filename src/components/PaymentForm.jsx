@@ -10,40 +10,40 @@ const PaymentForm = ({ ratingId, onSuccess }) => {
   const [error, setError] = useState(null);
 
   const handlePayment = async () => {
-    console.log("🖱️ Pay Now button clicked!"); // ✅ Button Click Check
-    if (!ratingId) {
-      console.error("❌ No ratingId provided!");
-      return;
+  console.log("🖱️ Pay Now button clicked!"); // ✅ Button Click Check
+  if (!ratingId) {
+    console.error("❌ No ratingId provided!");
+    return;
+  }
+
+  setLoading(true);
+  setError(null);
+
+  try {
+    console.log("🔍 Sending payment request for ratingId:", ratingId); // ✅ Logging ratingId before request
+
+    const response = await fetch(`${API_BASE_URL}/api/pay`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ratingId }),
+    });
+
+    const data = await response.json();
+    console.log("🎯 Response from backend:", data); // ✅ Log response
+
+    if (response.ok && data.url) {
+      console.log("✅ Redirecting to Stripe:", data.url);
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || "Failed to get Stripe URL");
     }
-  
-    setLoading(true);
-    setError(null);
-  
-    try {
-      console.log("🔍 Sending payment request for ratingId:", ratingId); // ✅ Logging ratingId before request
-  
-      const response = await fetch(`${API_BASE_URL}/api/pay`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ratingId }),
-      });
-  
-      const data = await response.json();
-      console.log("🎯 Response from backend:", data); // ✅ Log response
-  
-      if (response.ok && data.url) {
-        console.log("✅ Redirecting to Stripe:", data.url);
-        window.location.href = data.url;
-      } else {
-        throw new Error(data.error || "Failed to get Stripe URL");
-      }
-    } catch (err) {
-      console.error("❌ Payment error:", err);
-      setError("Payment error: " + err.message);
-    }
-  
-    setLoading(false);
-  };
+  } catch (err) {
+    console.error("❌ Payment error:", err);
+    setError("Payment error: " + err.message);
+  }
+
+  setLoading(false);
+};
 
   return (
     <div className="payment-modal">
