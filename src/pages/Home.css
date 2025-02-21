@@ -1,270 +1,148 @@
 /* General Reset */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    text-align: center;
-  }
-  
-  /* Container */
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-  
-  /* Header */
-  header {
-    background-color: #007bff;
-    color: white;
-    padding: 20px;
-    width: 100%;
-  }
-  
-  header h1 {
-    margin: 0;
-    font-size: 24px;
-  }
-  
-  /* Main Content */
-  main {
-    width: 100%;
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Forms */
-  .rating-form,
-  .leaderboard {
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-  }
-  
-  h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  label {
-    display: block;
-    text-align: left;
-    font-weight: bold;
-    margin-top: 10px;
-  }
-  
-  input,
-  select,
-  textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-  
-  button {
-    margin-top: 15px;
-    padding: 10px 15px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    width: 100%;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Leaderboard */
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #555;
-  }
-  
-  /* Footer */
-  footer {
-    background-color: #ddd;
-    padding: 10px;
-    width: 100%;
-    position: relative;
-    bottom: 0;
-  }
-  
-  footer nav a {
-    color: #007BFF;
-    text-decoration: none;
-    margin: 0 5px;
-  }
-  
-  footer nav a:hover {
-    text-decoration: underline;
-  }
-  /* Payment Modal */
-.payment-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 300px;
-  }
-  
-  .payment-modal h3 {
-    margin-bottom: 15px;
-  }
-  
-  .payment-modal form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .payment-modal button {
-    padding: 10px;
-    border: none;
-    background: #007bff;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-    width:100px
-  }
-  
-  .payment-modal button:disabled {
-    background: gray;
-    cursor: not-allowed;
-  }
-  
-  .payment-modal .cancel-btn {
-    background: red;
-  }
-  .pay-button {
-    background-color: #ff4d4d; /* Red */
-    color: white;
-    border: none;
-    padding: 6px 12px; /* ✅ Smaller padding */
-    font-size: 14px; /* ✅ Smaller text */
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    width: auto; /* ✅ No more full-width stretching */
-    height: 32px; /* ✅ Keeps it small */
-    min-width: 140px; /* ✅ Prevents too small buttons */
-    display: inline-block; /* ✅ Ensures proper button size */
-    text-align: center;
-  }
-  
-  .pay-button:hover {
-    background-color: #cc0000; /* Darker red */
-  }
-
-  /* ✅ Fix: Make rating, tag, and description boxes smaller */
-.review-form input,
-.review-form textarea {
-  width: 250px; /* ✅ Smaller width */
-  padding: 6px 10px; /* ✅ Comfortable padding */
-  font-size: 14px; /* ✅ Readable text */
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  display: block;
-  margin-bottom: 8px;
-}
-
-/* ✅ Fix: Make submit review button smaller */
-.review-form button {
-  background-color: #007bff; /* Blue */
-  color: white;
-  border: none;
-  padding: 6px 12px; /* ✅ Smaller padding */
-  font-size: 14px; /* ✅ Smaller text */
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  width: auto; /* ✅ No more full-width stretching */
-  min-width: 120px; /* ✅ Ensures it’s not too small */
-  display: inline-block; /* ✅ Proper button size */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
   text-align: center;
 }
 
-.review-form button:hover {
-  background-color: #0056b3; /* Darker blue */
+/* Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
 }
 
-/* ✅ Center the review form */
+/* ✅ Lower Title Position */
+.title-container {
+  margin-top: 80px; /* Adjust this value to lower the title */
+}
+
+/* ✅ Main Title (Pink) */
+.main-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+  color: #ff69b4; /* ✅ Pink Title */
+}
+
+.main-title:hover {
+  color: #ff1493; /* Darker Pink on Hover */
+}
+
+/* ✅ Subtitle Styling */
+.subtitle {
+  text-align: center;
+  margin-top: -10px;
+  font-size: 1.2rem;
+}
+
+/* ✅ Pink Titles */
+.pink-text {
+  color: #ff69b4; /* Pink color for important titles */
+  font-weight: bold;
+}
+
+/* ✅ Search Section Styling */
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Adds spacing between elements */
+  margin-bottom: 20px;
+}
+
+/* ✅ Search Input Field */
+.search-container input {
+  padding: 10px;
+  border: 2px solid #ff69b4; /* Pink border */
+  border-radius: 5px;
+  font-size: 16px;
+  width: 250px;
+  text-align: center;
+}
+
+/* ✅ Pink Search Button */
+.search-container button {
+  background-color: #ff69b4; /* Pink */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.search-container button:hover {
+  background-color: #ff1493; /* Darker pink */
+}
+
+/* ✅ Review List */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* ✅ Individual Review Card */
+.review-card {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 400px;
+}
+
+/* ✅ Review Form Styling */
 .review-form {
   display: flex;
   flex-direction: column;
-  align-items: center; /* ✅ Centers form elements */
-  justify-content: center; /* ✅ Keeps everything balanced */
-  max-width: 300px; /* ✅ Prevents it from being too wide */
-  margin: 20px auto; /* ✅ Centers the whole form */
-  padding: 15px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  margin-top: 20px;
 }
 
-/* ✅ Make input boxes smaller and center them */
 .review-form input,
 .review-form textarea {
-  width: 100%; /* ✅ Adjusts to form size */
-  max-width: 250px; /* ✅ Prevents too-wide fields */
-  padding: 6px 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
+  width: 250px;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ff69b4; /* Pink border */
   border-radius: 5px;
-  margin-bottom: 10px; /* ✅ Spacing between fields */
-  text-align: center; /* ✅ Centers text inside inputs */
+  font-size: 14px;
 }
 
-/* ✅ Center the submit button */
+/* ✅ Submit Review Button (Pink) */
 .review-form button {
-  background-color: #007bff;
+  background-color: #ff69b4; /* Pink */
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 10px 15px;
   font-size: 14px;
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s ease;
-  width: 150px; /* ✅ Ensures button is not too wide */
-  text-align: center;
+  width: auto;
 }
 
 .review-form button:hover {
-  background-color: #0056b3;
+  background-color: #ff1493; /* Darker pink */
 }
 
-/* ✅ Footer Styles */
+/* ✅ Footer Styling */
 .footer {
   display: flex;
   justify-content: center;
-  gap: 20px; /* ✅ Space between links */
+  gap: 20px;
   padding: 10px;
   background-color: #f8f9fa;
   position: fixed;
@@ -274,7 +152,7 @@ body {
 }
 
 .footer-link {
-  color: #007bff;
+  color: #ff00cc;
   text-decoration: none;
   font-size: 14px;
 }
@@ -283,15 +161,86 @@ body {
   text-decoration: underline;
 }
 
-.main-title {
+/* ✅ Payment Modal */
+.payment-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  cursor: pointer; /* Makes it clear it's clickable */
-  transition: color 0.2s ease-in-out;
+  width: 300px;
 }
 
-.main-title:hover {
-  color: #d9534f; /* Slight color change on hover */
+.payment-modal h3 {
+  margin-bottom: 15px;
+}
+
+.payment-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-modal button {
+  padding: 10px;
+  border: none;
+  background: #ff69b4; /* Pink */
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100px;
+}
+
+.payment-modal button:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+.payment-modal .cancel-btn {
+  background: red;
+}
+
+/* ✅ Pay Now Button */
+.pay-button {
+  background-color: #ff4d4d; /* Red */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: auto;
+  height: 32px;
+  min-width: 140px;
+  display: inline-block;
+  text-align: center;
+}
+
+.pay-button:hover {
+  background-color: #cc0000; /* Darker red */
+}
+
+/* ✅ Success Message */
+.success-message {
+  color: green;
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 10px;
+  background-color: #e6ffe6;
+  padding: 8px;
+  border-radius: 5px;
+  display: inline-block;
+}
+/* ✅ Make subtitle pink */
+.subtitle {
+  text-align: center;
+  margin-top: -10px;
+  font-size: 1.2rem;
+  color: #ff69b4; /* Pink text */
+  font-weight: bold;
 }

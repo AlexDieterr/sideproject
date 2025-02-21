@@ -24,7 +24,7 @@
   .search-form button {
     padding: 10px 15px;
     margin-left: 10px;
-    background: #007bff;
+    background: #ff1493;
     color: white;
     border: none;
     border-radius: 5px;
@@ -33,5 +33,5 @@
   }
   
   .search-form button:hover {
-    background: #0056b3;
+    background: #ff1493;
   }

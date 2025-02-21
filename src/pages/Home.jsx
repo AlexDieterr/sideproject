@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import Search from "../components/Search";
 import PaymentForm from "../components/PaymentForm";
-import Footer from "../components/Footer"; // ✅ Import Footer
+import Footer from "../components/Footer"; 
 import "./Home.css";
 
-// ✅ Fix: Use Vite's import.meta.env instead of process.env for React
+// ✅ Use Vite's Environment Variable System
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
 
 const Home = () => {
@@ -13,6 +13,7 @@ const Home = () => {
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ rating: "", tag: "", review: "" });
   const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [message, setMessage] = useState(""); // ✅ Success message state
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -51,7 +52,7 @@ const Home = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!searchedName || !newReview.rating || !newReview.tag || !newReview.review) {
-      alert("Please fill in all fields!");
+      setMessage("❌ Please fill in all fields!");
       return;
     }
 
@@ -74,19 +75,29 @@ const Home = () => {
 
       setSearchResults([...searchResults, data.review]);
       setNewReview({ rating: "", tag: "", review: "" });
-      alert("Review submitted successfully!");
+
+      // ✅ Show success message
+      setMessage("✅ Review submitted successfully! 🎉");
+
+      // ✅ Auto-hide message after 3 seconds
+      setTimeout(() => setMessage(""), 3000);
     } catch (error) {
       console.error("Error submitting review:", error);
-      alert("Error submitting review. Try again.");
+      setMessage("❌ Error submitting review. Try again.");
     }
   };
 
   return (
     <div className="home-container">
-      {/* ✅ Clicking resets the page to its initial state */}
+      {/* ✅ Styled Title & Subtitle */}
       <h1 className="main-title" onClick={() => window.location.reload()}>
-        GauchoGirls
+        🦝🌴 <span className="pink-text">GauchoGirls</span>
       </h1>
+      <h3 className="subtitle">
+        <span className="pink-text">anonymously rate your experience with isla vista girls</span>
+        <br />
+        <span className="pink-text">(like RateMyProfessor but for IV guys to rate IV girls)</span>
+      </h3>
 
       <h2>Search for Reviews</h2>
       <Search onSearch={handleSearch} />
@@ -99,19 +110,22 @@ const Home = () => {
             {searchResults.length === 0 ? (
               <p>No results found</p>
             ) : (
-              searchResults.map((review, index) => (
-                <div key={review._id || review.id || `review-${index}`} className="review-card">
+              searchResults.map((review) => (
+                <div key={review._id || review.id} className="review-card">
                   <h3>{review.name}</h3>
                   <p>Rating: {review.rating}/10</p>
                   <p>Tag: {review.tag}</p>
                   <p>{review.review}</p>
               
                   <button
-                    className="pay-button"
-                    onClick={() => setSelectedReviewId(review._id)}
-                  >
-                    Pay Now ($2.99 to Remove)
-                  </button>
+  className="pay-button"
+  onClick={() => {
+    console.log("🛒 Pay Now clicked for review:", review._id);
+    setSelectedReviewId(review._id);
+  }}
+>
+  Pay Now ($0.99 to Remove)
+</button>
                 </div>
               ))
             )}
@@ -123,6 +137,9 @@ const Home = () => {
               onSuccess={() => setSelectedReviewId(null)}
             />
           )}
+
+          {/* ✅ Success message UI */}
+          {message && <p className="success-message">{message}</p>}
 
           <h3>Leave a Review for {searchedName}</h3>
           <form onSubmit={handleReviewSubmit} className="review-form">
@@ -153,17 +170,32 @@ const Home = () => {
         </>
       )}
 
-      <h2>All Reviews</h2>
+      <h2>Most Recent Reviews</h2> {/* ✅ Added Title for Recent Reviews */}
       <div className="reviews-list">
         {reviews.map((review) => (
-          <div key={review.id} className="review-card">
+          <div key={review._id || review.id} className="review-card">
             <h3>{review.name}</h3>
             <p>Rating: {review.rating}/10</p>
             <p>Tag: {review.tag}</p>
             <p>{review.review}</p>
+
+            {/* ✅ Added Pay Button to Recent Reviews */}
+            <button
+              className="pay-button"
+              onClick={() => setSelectedReviewId(review._id)}
+            >
+              Pay Now ($0.99 to Remove)
+            </button>
           </div>
         ))}
       </div>
+
+      {selectedReviewId && (
+        <PaymentForm
+          ratingId={selectedReviewId}
+          onSuccess={() => setSelectedReviewId(null)}
+        />
+      )}
 
       {/* ✅ Add Footer Here */}
       <Footer />

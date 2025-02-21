@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Success from "./pages/success";
+import Success from "./pages/successTemp";
 import Cancel from "./pages/Cancel";
 import Legal from "./pages/Legal_temp";
 
