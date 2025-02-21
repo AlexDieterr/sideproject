@@ -78,11 +78,14 @@ app.post("/api/reviews", async (req, res) => {
 
 // ✅ Payment Route
 app.post("/api/pay", async (req, res) => {
-  console.log("🔑 STRIPE_SECRET_KEY in /api/pay:", process.env.STRIPE_SECRET_KEY);
-  console.log("🔍 Stripe Key Being Used:", stripe._api.auth);
+  console.log("🌍 FRONTEND_URL:", process.env.FRONTEND_URL); // Debugging FRONTEND_URL
+  console.log("🛒 Received Payment Request for Rating ID:", req.body.ratingId);
 
   const { ratingId } = req.body;
-  if (!ratingId) return res.status(400).json({ error: "Missing ratingId" });
+  if (!ratingId) {
+    console.error("❌ Missing ratingId in request");
+    return res.status(400).json({ error: "Missing ratingId" });
+  }
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -98,10 +101,11 @@ app.post("/api/pay", async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.FRONTEND_URL}/success`,
-      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+      success_url: `${process.env.FRONTEND_URL}/success?ratingId=${ratingId}`,  // ✅ Ensure this is correct
+      cancel_url: `${process.env.FRONTEND_URL}/cancel`, // ✅ Ensure this is correct
     });
 
+    console.log("✅ Stripe Session Created! Redirecting to:", session.url);
     res.json({ url: session.url });
   } catch (error) {
     console.error("❌ Stripe Checkout Error:", error);

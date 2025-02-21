@@ -17,22 +17,22 @@ const Success = () => {
       navigate("/");
       return;
     }
-  
-    console.log("✅ Success.jsx: ratingId received:", ratingId); // Log the received ratingId
-  
+
+    console.log("✅ Success.jsx: ratingId received:", ratingId);
+
     const deleteReview = async () => {
       console.log("🚀 Sending DELETE request for ratingId:", ratingId);
-  
+
       try {
         const response = await fetch(`${API_BASE_URL}/api/reviews/delete`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ratingId }),
         });
-  
+
         const data = await response.json();
         console.log("🎯 Response from DELETE API:", data);
-  
+
         if (response.ok) {
           console.log("✅ Review deleted successfully!");
         } else {
@@ -42,9 +42,9 @@ const Success = () => {
         console.error("❌ Network error deleting review:", error);
       }
     };
-  
+
     deleteReview();
-  }, [ratingId]);
+  }, [ratingId, navigate]);
 
   return (
     <div className="container">
