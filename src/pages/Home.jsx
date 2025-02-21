@@ -107,29 +107,31 @@ const Home = () => {
           <h2>Results for: {searchedName}</h2>
 
           <div className="search-results">
-            {searchResults.length === 0 ? (
-              <p>No results found</p>
-            ) : (
-              searchResults.map((review) => (
-                <div key={review._id || review.id} className="review-card">
-                  <h3>{review.name}</h3>
-                  <p>Rating: {review.rating}/10</p>
-                  <p>Tag: {review.tag}</p>
-                  <p>{review.review}</p>
-              
-                  <button
-  className="pay-button"
-  onClick={() => {
-    console.log("🛒 Pay Now clicked for review:", review._id);
-    setSelectedReviewId(review._id);
-  }}
->
-  Pay Now ($0.99 to Remove)
-</button>
-                </div>
-              ))
-            )}
-          </div>
+  {searchResults.length === 0 ? (
+    <p>No results found</p>
+  ) : (
+    <div className="review-list">
+      {searchResults.map((review) => (
+        <div key={review._id || review.id} className="review-card">
+          <h3>{review.name}</h3>
+          <p>Rating: {review.rating}/10</p>
+          <p>Tag: {review.tag}</p>
+          <p>{review.review}</p>
+
+          <button
+            className="pay-button"
+            onClick={() => {
+              console.log("🛒 Pay Now clicked for review:", review._id);
+              setSelectedReviewId(review._id);
+            }}
+          >
+            Pay Now ($0.99 to Remove)
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
 
           {selectedReviewId && (
             <PaymentForm
