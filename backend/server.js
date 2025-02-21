@@ -110,14 +110,14 @@ app.post("/api/pay", async (req, res) => {
           price_data: {
             currency: "usd",
             product_data: { name: "Remove Review" },
-            unit_amount: unitAmount, // ✅ This value is CRUCIAL
+            unit_amount: 99, // $0.99
           },
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:5173/success?ratingId=${ratingId}`,
-      cancel_url: `http://localhost:5173/cancel`,
+      success_url: `${process.env.FRONTEND_URL}/success?ratingId=${ratingId}`,
+      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
       metadata: { ratingId },
     });
 
