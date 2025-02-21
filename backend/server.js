@@ -1,8 +1,6 @@
 require("dotenv").config();
-require("dotenv").config();
 
-console.log("🚀 Server is starting...");
-require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 console.log("✅ ENV VARIABLES LOADED:");
 console.log("PORT:", process.env.PORT);
@@ -18,7 +16,6 @@ if (!process.env.PORT || !process.env.MONGO_URI || !process.env.STRIPE_SECRET_KE
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const bodyParser = require("body-parser");
 const { randomUUID } = require("crypto");
 
