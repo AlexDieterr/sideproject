@@ -100,6 +100,7 @@ const Home = () => {
       </h3>
 
       <h2>Search for Reviews (ENTER LAST NAMES TOO)</h2>
+      <h3>Payments have been fixed srry</h3>
       <Search onSearch={handleSearch} />
 
       {searchedName && (
