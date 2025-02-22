@@ -5,6 +5,7 @@ import Cancel from "./pages/Cancel";
 import Legal from "./pages/Legal_temp";
 import Leaderboard from "./pages/Leaderboard";
 import Reviews from "./pages/Reviews";
+import ReviewPage from "./pages/Reviewspage";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/legal" element={<Legal />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/reviews" element={<Reviews />} />
+        <Route path="/reviews/:name" element={<ReviewPage />} /> {/* ✅ Added Route */}
       </Routes>
     </Router>
   );

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Leaderboard.css"
+import "../styles/Leaderboard.css";
 
 // ✅ Use Vite's Environment Variable System
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
@@ -65,7 +65,7 @@ const Leaderboard = () => {
             {worstNames.map((entry, index) => (
               <li
                 key={entry.name}
-                onClick={() => navigate(`/?search=${entry.name}`)}
+                onClick={() => navigate(`/reviews/${encodeURIComponent(entry.name)}`)}
                 className="leaderboard-item"
                 style={{ backgroundColor: getColor(entry.average) }} // ✅ Dynamic color
               >
@@ -82,7 +82,7 @@ const Leaderboard = () => {
             {bestNames.map((entry, index) => (
               <li
                 key={entry.name}
-                onClick={() => navigate(`/?search=${entry.name}`)}
+                onClick={() => navigate(`/reviews/${encodeURIComponent(entry.name)}`)}
                 className="leaderboard-item"
                 style={{ backgroundColor: getColor(entry.average) }} // ✅ Dynamic color
               >

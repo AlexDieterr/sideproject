@@ -109,3 +109,20 @@
   .rating-box.red {
     background-color: red;
   }
+
+  .pay-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .pay-button:hover {
+    background-color: #cc0000;
+  }

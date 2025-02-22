@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import PaymentForm from "../components/PaymentForm"; // ✅ Import PaymentForm component
 import "../styles/Reviews.css"; // ✅ Import CSS
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
 
-const Reviews = () => {
+const ReviewPage = () => {
+  const { name } = useParams();
   const [reviews, setReviews] = useState([]);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/reviews`);
+        const response = await fetch(`${API_BASE_URL}/api/reviews/search?name=${name}`);
         if (!response.ok) throw new Error("Failed to fetch reviews.");
         const data = await response.json();
         setReviews(data);
@@ -22,11 +23,11 @@ const Reviews = () => {
     };
 
     fetchReviews();
-  }, []);
+  }, [name]);
 
   return (
     <div className="reviews-container">
-      <h1 className="reviews-title">📢 Stream of All Reviews</h1>
+      <h1 className="reviews-title">Reviews for {decodeURIComponent(name)}</h1>
       <Link to="/" className="back-button">🏠 Back to Home</Link>
       <div className="reviews-list">
         {reviews.length === 0 ? (
@@ -72,4 +73,4 @@ const Reviews = () => {
   );
 };
 
-export default Reviews;
+export default ReviewPage;

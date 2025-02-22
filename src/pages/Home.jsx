@@ -169,6 +169,14 @@ const Home = () => {
                     </p>
                     <p>Tag: {review.tag}</p>
                     <p>{review.review}</p>
+
+                    {/* ✅ Pay Now Button */}
+                    <button
+                      className="pay-button"
+                      onClick={() => setSelectedReviewId(review._id)}
+                    >
+                      Pay Now ($0.99 to Remove)
+                    </button>
                   </div>
                 ))}
               </div>
@@ -223,6 +231,11 @@ const Home = () => {
       </div>
 
       <Footer />
+
+      {/* ✅ Payment Form Modal */}
+      {selectedReviewId && (
+        <PaymentForm ratingId={selectedReviewId} onSuccess={() => setSelectedReviewId(null)} />
+      )}
     </div>
   );
 };

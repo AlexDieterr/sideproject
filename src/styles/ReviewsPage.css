@@ -1,0 +1,81 @@
+/* ✅ Review Page Styling */
+.reviews-container {
+    text-align: center;
+    padding: 30px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  .reviews-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .back-button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .reviews-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .review-card {
+    width: 90%;
+    max-width: 600px;
+    background: white;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  
+  .review-card h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .review-card p {
+    font-size: 1.1rem;
+    margin: 5px 0;
+  }
+  
+  /* ✅ Rating Box */
+  .rating-box {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    color: white;
+  }
+
+  .pay-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .pay-button:hover {
+    background-color: #cc0000;
+  }
