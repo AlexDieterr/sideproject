@@ -4,6 +4,7 @@ import Success from "./pages/successTemp";
 import Cancel from "./pages/Cancel";
 import Legal from "./pages/Legal_temp";
 import Leaderboard from "./pages/Leaderboard";
+import Reviews from "./pages/Reviews";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/cancel" element={<Cancel />} />
         <Route path="/legal" element={<Legal />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/reviews" element={<Reviews />} />
       </Routes>
     </Router>
   );

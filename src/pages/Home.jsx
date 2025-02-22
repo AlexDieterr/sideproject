@@ -5,7 +5,6 @@ import Footer from "../components/Footer";
 import "./Home.css";
 import { Link } from "react-router-dom"; // ✅ Import this
 
-
 // ✅ Use Vite's Environment Variable System
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
 
@@ -103,13 +102,12 @@ const Home = () => {
         🦝🌴 <span className="pink-text">GauchoGirls</span>
       </h1>
       <h3 className="subtitle">
-        <span className="pink-text">anonymously rate your experience with isla vista girls</span>
+        <span className="pink-text">Anonymously rate your experience with Isla Vista girls</span>
         <br />
-        <span className="pink-text">(like RateMyProfessor but for IV guys to rate IV girls)</span>
+        <span className="pink-text">(Like RateMyProfessor but for IV guys to rate IV girls)</span>
       </h3>
 
       <h2>Search for Reviews (ENTER LAST NAMES TOO)</h2>
-      <h3>Payments have been fixed srry</h3>
       <Search onSearch={handleSearch} />
 
       {searchedName && (
@@ -154,7 +152,6 @@ const Home = () => {
                 {searchResults.map((review) => (
                   <div key={review._id || review.id} className="review-card">
                     <h3>{review.name}</h3>
-                    {/* ✅ Updated Rating Styling - Small Colored Box */}
                     <p>
                       Rating:{" "}
                       <span
@@ -172,87 +169,28 @@ const Home = () => {
                     </p>
                     <p>Tag: {review.tag}</p>
                     <p>{review.review}</p>
-
-                    <button
-                      className="pay-button"
-                      onClick={() => setSelectedReviewId(review._id)}
-                    >
-                      Pay Now ($0.99 to Remove)
-                    </button>
                   </div>
                 ))}
               </div>
             )}
           </div>
-
-          {selectedReviewId && (
-            <PaymentForm
-              ratingId={selectedReviewId}
-              onSuccess={() => setSelectedReviewId(null)}
-            />
-          )}
-
-          {/* ✅ Success message UI */}
-          {message && <p className="success-message">{message}</p>}
-
-          <h3>Leave a Review for {searchedName}</h3>
-          <form onSubmit={handleReviewSubmit} className="review-form">
-            <input
-              type="number"
-              placeholder="Rating (1-10)"
-              value={newReview.rating}
-              onChange={(e) => setNewReview({ ...newReview, rating: e.target.value })}
-              min="1"
-              max="10"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Tag (e.g., Nice, Rude, Funny)"
-              value={newReview.tag}
-              onChange={(e) => setNewReview({ ...newReview, tag: e.target.value })}
-              required
-            />
-            <textarea
-              placeholder="Write your review..."
-              value={newReview.review}
-              onChange={(e) => setNewReview({ ...newReview, review: e.target.value })}
-              required
-            ></textarea>
-            <button type="submit">Submit Review</button>
-          </form>
         </>
       )}
 
-      <h3>
-        <Link to="/leaderboard" className="leaderboard-link">View Leaderboard</Link>
-      </h3>
+      {/* ✅ View Leaderboard Button */}
+      <div className="leaderboard-button-container">
+        <Link to="/leaderboard" className="leaderboard-button">
+          View Leaderboard
+        </Link>
+      </div>
 
-      <h2>Most Recent Reviews</h2>
-      <div className="reviews-list">
-        {reviews.map((review) => (
-          <div key={review._id || review.id} className="review-card">
-            <h3>{review.name}</h3>
-            {/* ✅ Small Colored Box Around Rating */}
-            <p>
-              Rating:{" "}
-              <span
-                style={{
-                  backgroundColor: getRatingColor(review.rating),
-                  color: "white",
-                  padding: "4px 8px",
-                  borderRadius: "4px",
-                  fontWeight: "bold",
-                  display: "inline-block",
-                }}
-              >
-                {review.rating}/10
-              </span>
-            </p>
-            <p>Tag: {review.tag}</p>
-            <p>{review.review}</p>
-          </div>
-        ))}
+
+
+      {/* ✅ Styled Most Recent Reviews Title as a Button */}
+      <div className="most-recent-reviews-title">
+        <Link to="/reviews" className="most-recent-reviews-button">
+          Stream 📝
+        </Link>
       </div>
 
       <Footer />

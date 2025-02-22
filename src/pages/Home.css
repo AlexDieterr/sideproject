@@ -301,3 +301,45 @@ body {
   text-align: center; /* ✅ Center text inside */
   margin: 10px auto; /* ✅ Ensures proper centering */
 }
+
+.leaderboard-button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.leaderboard-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.leaderboard-button:hover {
+  background-color: #0056b3;
+}
+
+.most-recent-reviews-title {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.most-recent-reviews-button {
+  display: inline-block;
+  padding: 12px 20px;
+  background-color: #007bff; /* Blue button */
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: 0.3s ease-in-out;
+}
+
+.most-recent-reviews-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
