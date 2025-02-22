@@ -199,6 +199,6 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
 app.use(bodyParser.json());
 
 // ✅ Start the Server
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
