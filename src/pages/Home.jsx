@@ -3,6 +3,8 @@ import Search from "../components/Search";
 import PaymentForm from "../components/PaymentForm";
 import Footer from "../components/Footer"; 
 import "./Home.css";
+import { Link } from "react-router-dom"; // ✅ Import this
+
 
 // ✅ Use Vite's Environment Variable System
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
@@ -221,6 +223,10 @@ const Home = () => {
           </form>
         </>
       )}
+
+      <h3>
+        <Link to="/leaderboard" className="leaderboard-link">View Leaderboard</Link>
+      </h3>
 
       <h2>Most Recent Reviews</h2>
       <div className="reviews-list">
