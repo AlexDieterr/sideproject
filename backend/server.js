@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-// ✅ Apply Security Headers
+// ✅ Security Headers
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
@@ -22,7 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Redirect gauchogirls.com to www.gauchogirls.com
+// ✅ Redirect non-www to www
 app.use((req, res, next) => {
   if (req.hostname === "gauchogirls.com") {
     return res.redirect(301, `https://www.gauchogirls.com${req.url}`);
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Check for Required Environment Variables
+// ✅ Check Required Environment Variables
 if (!process.env.PORT || !process.env.MONGO_URI || !process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
   console.error("❌ Missing environment variables! Check .env file.");
   process.exit(1);
@@ -44,7 +44,7 @@ app.use(cors({
 app.use(express.json());
 app.use(bodyParser.json());
 
-// 🔹 Connect to MongoDB Atlas
+// 🔹 Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
@@ -59,8 +59,8 @@ const reviewSchema = new mongoose.Schema({
 
 const Review = mongoose.model("Review", reviewSchema);
 
-// 🔹 Store Blocked IPs with Expiration
-const blockedIps = new Map(); // Key: IP, Value: Timestamp when block expires (24 hrs)
+// 🔹 Store Blocked IPs
+const blockedIps = new Map(); // Key: IP, Value: Block Expiry Time
 
 // ✅ IP Blocking Middleware
 app.use((req, res, next) => {
@@ -72,14 +72,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Rate Limiting: Ban for 24 Hours After Exceeding Limit
+// ✅ Rate Limiting (Block IPs on Spam)
 const reviewLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 5, // Limit to 5 reviews per 60 minutes
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 1, // Max 5 reviews per hour per IP
   message: { error: "Too many reviews submitted. Try again later." },
-  onLimitReached: (req, res, options) => {
+  onLimitReached: (req) => {
     console.log(`🚨 SPAM DETECTED: Banning IP ${req.ip} for 24 hours.`);
-    blockedIps.set(req.ip, Date.now() + 48 * 60 * 60 * 1000); // Block for 24 hours
+    blockedIps.set(req.ip, Date.now() + 100 * 60 * 60 * 1000); // Block for 100 hours
   }
 });
 
@@ -98,7 +98,7 @@ app.get("/api/reviews/search", async (req, res) => {
   res.json(filteredReviews);
 });
 
-// ✅ POST a new review (Now Rate-Limited + 24-Hour Ban)
+// ✅ POST a new review (With Spam Protection)
 app.post("/api/reviews", reviewLimiter, async (req, res) => {
   const { name, rating, tag, review } = req.body;
   if (!name || !rating || !tag || !review) {
@@ -134,7 +134,7 @@ app.post("/api/pay", async (req, res) => {
           price_data: {
             currency: "usd",
             product_data: { name: "Remove Review" },
-            unit_amount: 99,
+            unit_amount: 9900, // 99.00 USD
           },
           quantity: 1,
         },
@@ -166,7 +166,7 @@ app.post("/api/reviews/delete", async (req, res) => {
   }
 });
 
-// ✅ Stripe Webhook to Confirm Payment
+// ✅ Stripe Webhook
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
@@ -195,10 +195,7 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
   res.status(200).json({ received: true });
 });
 
-// ✅ Convert raw body for other routes
-app.use(bodyParser.json());
-
 // ✅ Start the Server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

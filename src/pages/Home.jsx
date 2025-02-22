@@ -99,7 +99,7 @@ const Home = () => {
         <span className="pink-text">(like RateMyProfessor but for IV guys to rate IV girls)</span>
       </h3>
 
-      <h2>Search for Reviews</h2>
+      <h2>Search for Reviews (ENTER LAST NAMES TOO)</h2>
       <Search onSearch={handleSearch} />
 
       {searchedName && (
