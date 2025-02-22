@@ -174,6 +174,37 @@ const Home = () => {
               </div>
             )}
           </div>
+
+          {/* ✅ Leave a Review Section */}
+          <div className="leave-review-container">
+            <h3>Leave a Review for {searchedName}</h3>
+            {message && <p className="success-message">{message}</p>}
+            <form onSubmit={handleReviewSubmit} className="review-form">
+              <input
+                type="number"
+                placeholder="Rating (1-10)"
+                value={newReview.rating}
+                onChange={(e) => setNewReview({ ...newReview, rating: e.target.value })}
+                min="1"
+                max="10"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Tag (e.g., Nice, Rude, Funny)"
+                value={newReview.tag}
+                onChange={(e) => setNewReview({ ...newReview, tag: e.target.value })}
+                required
+              />
+              <textarea
+                placeholder="Write your review..."
+                value={newReview.review}
+                onChange={(e) => setNewReview({ ...newReview, review: e.target.value })}
+                required
+              ></textarea>
+              <button type="submit">Submit Review</button>
+            </form>
+          </div>
         </>
       )}
 
@@ -184,9 +215,7 @@ const Home = () => {
         </Link>
       </div>
 
-
-
-      {/* ✅ Styled Most Recent Reviews Title as a Button */}
+      {/* ✅ Most Recent Reviews Button */}
       <div className="most-recent-reviews-title">
         <Link to="/reviews" className="most-recent-reviews-button">
           Stream 📝
