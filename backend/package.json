@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo 'No build step required'"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -14,4 +15,5 @@
     "dotenv": "^16.4.7",
     "uuid": "^11.1.0"
   }
+  
 }
