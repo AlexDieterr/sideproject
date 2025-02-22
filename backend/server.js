@@ -63,12 +63,12 @@ app.use((req, res, next) => {
 
 // ✅ Rate Limiting: Ban for 24 Hours After Exceeding Limit
 const reviewLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit to 5 reviews per 15 minutes
+  windowMs: 60 * 60 * 1000, // 60 minutes
+  max: 5, // Limit to 5 reviews per 60 minutes
   message: { error: "Too many reviews submitted. Try again later." },
   onLimitReached: (req, res, options) => {
     console.log(`🚨 SPAM DETECTED: Banning IP ${req.ip} for 24 hours.`);
-    blockedIps.set(req.ip, Date.now() + 24 * 60 * 60 * 1000); // Block for 24 hours
+    blockedIps.set(req.ip, Date.now() + 48 * 60 * 60 * 1000); // Block for 24 hours
   }
 });
 
