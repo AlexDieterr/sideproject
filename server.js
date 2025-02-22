@@ -17,8 +17,16 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "connect-src 'self' https://sideproject-kbo3.onrender.com https://api.stripe.com;"
+    "connect-src 'self' https://www.gauchogirls.com https://api.stripe.com;"
   );
+  next();
+});
+
+// ✅ Redirect gauchogirls.com to www.gauchogirls.com
+app.use((req, res, next) => {
+  if (req.hostname === "gauchogirls.com") {
+    return res.redirect(301, `https://www.gauchogirls.com${req.url}`);
+  }
   next();
 });
 
@@ -29,7 +37,10 @@ if (!process.env.PORT || !process.env.MONGO_URI || !process.env.STRIPE_SECRET_KE
 }
 
 // ✅ Middleware
-app.use(cors());
+app.use(cors({
+  origin: ["https://www.gauchogirls.com", "https://gauchogirls.com"],
+  credentials: true,
+}));
 app.use(express.json());
 app.use(bodyParser.json());
 
