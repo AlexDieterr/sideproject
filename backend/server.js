@@ -1,16 +1,19 @@
 require("dotenv").config();
 console.log("🔑 Using STRIPE_SECRET_KEY:", process.env.STRIPE_SECRET_KEY);
 console.log("✅ Live Mode:", process.env.STRIPE_SECRET_KEY.startsWith("sk_live") ? "✅ Yes" : "❌ No");
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const rateLimit = require("express-rate-limit");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+// ✅ Apply Security Headers
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
@@ -19,6 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// ✅ Check for Required Environment Variables
 if (!process.env.PORT || !process.env.MONGO_URI || !process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
   console.error("❌ Missing environment variables! Check .env file.");
   process.exit(1);
@@ -40,9 +44,33 @@ const reviewSchema = new mongoose.Schema({
   rating: Number,
   tag: String,
   review: String,
-}, { timestamps: true }); 
+}, { timestamps: true });
 
 const Review = mongoose.model("Review", reviewSchema);
+
+// 🔹 Store Blocked IPs with Expiration
+const blockedIps = new Map(); // Key: IP, Value: Timestamp when block expires (24 hrs)
+
+// ✅ IP Blocking Middleware
+app.use((req, res, next) => {
+  const blockExpiration = blockedIps.get(req.ip);
+  if (blockExpiration && Date.now() < blockExpiration) {
+    console.log(`🚨 BLOCKED: IP ${req.ip} tried to access but is banned.`);
+    return res.status(403).json({ error: "You are blocked for 24 hours due to excessive requests." });
+  }
+  next();
+});
+
+// ✅ Rate Limiting: Ban for 24 Hours After Exceeding Limit
+const reviewLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit to 5 reviews per 15 minutes
+  message: { error: "Too many reviews submitted. Try again later." },
+  onLimitReached: (req, res, options) => {
+    console.log(`🚨 SPAM DETECTED: Banning IP ${req.ip} for 24 hours.`);
+    blockedIps.set(req.ip, Date.now() + 24 * 60 * 60 * 1000); // Block for 24 hours
+  }
+});
 
 // ✅ GET all reviews
 app.get("/api/reviews", async (req, res) => {
@@ -59,8 +87,8 @@ app.get("/api/reviews/search", async (req, res) => {
   res.json(filteredReviews);
 });
 
-// ✅ POST a new review
-app.post("/api/reviews", async (req, res) => {
+// ✅ POST a new review (Now Rate-Limited + 24-Hour Ban)
+app.post("/api/reviews", reviewLimiter, async (req, res) => {
   const { name, rating, tag, review } = req.body;
   if (!name || !rating || !tag || !review) {
     return res.status(400).json({ error: "All fields required." });
@@ -78,7 +106,7 @@ app.post("/api/reviews", async (req, res) => {
 
 // ✅ Payment Route
 app.post("/api/pay", async (req, res) => {
-  console.log("🌍 FRONTEND_URL:", process.env.FRONTEND_URL); // Debugging FRONTEND_URL
+  console.log("🌍 FRONTEND_URL:", process.env.FRONTEND_URL);
   console.log("🛒 Received Payment Request for Rating ID:", req.body.ratingId);
 
   const { ratingId } = req.body;
@@ -101,8 +129,8 @@ app.post("/api/pay", async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.FRONTEND_URL}/success?ratingId=${ratingId}`,  // ✅ Ensure this is correct
-      cancel_url: `${process.env.FRONTEND_URL}/cancel`, // ✅ Ensure this is correct
+      success_url: `${process.env.FRONTEND_URL}/success?ratingId=${ratingId}`,
+      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
     });
 
     console.log("✅ Stripe Session Created! Redirecting to:", session.url);
