@@ -75,7 +75,7 @@ app.use((req, res, next) => {
 // ✅ Rate Limiting (Block IPs on Spam)
 const reviewLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 1, // Max 5 reviews per hour per IP
+  max: 2, // Max 5 reviews per hour per IP
   message: { error: "Too many reviews submitted. Try again later." },
   onLimitReached: (req) => {
     console.log(`🚨 SPAM DETECTED: Banning IP ${req.ip} for 24 hours.`);
@@ -94,8 +94,23 @@ app.get("/api/reviews/search", async (req, res) => {
   const { name } = req.query;
   if (!name) return res.status(400).json({ error: "Name query required." });
 
-  const filteredReviews = await Review.find({ name: new RegExp(name, "i") });
-  res.json(filteredReviews);
+  try {
+    // Get all reviews for the searched name
+    const reviews = await Review.find({ name: new RegExp(name, "i") });
+
+    if (reviews.length === 0) {
+      return res.json({ message: "No reviews found.", name, overallRating: "N/A", reviews: [] });
+    }
+
+    // ✅ Calculate average rating
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const overallRating = (totalRating / reviews.length).toFixed(1); // Rounded to 1 decimal place
+
+    res.json({ name, overallRating, reviews });
+  } catch (error) {
+    console.error("❌ Error searching reviews:", error);
+    res.status(500).json({ error: "Failed to search reviews" });
+  }
 });
 
 // ✅ POST a new review (With Spam Protection)

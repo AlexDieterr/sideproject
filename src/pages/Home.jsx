@@ -32,7 +32,7 @@ const Home = () => {
 
   const handleSearch = async (query) => {
     if (!query) {
-      setSearchResults(reviews);
+      setSearchResults([]);
       setSearchedName("");
       return;
     }
@@ -87,6 +87,13 @@ const Home = () => {
     }
   };
 
+  // ✅ Function to determine rating background color
+  const getRatingColor = (rating) => {
+    if (rating >= 7.5) return "green";
+    if (rating >= 4) return "yellow";
+    return "red";
+  };
+
   return (
     <div className="home-container">
       {/* ✅ Styled Title & Subtitle */}
@@ -106,33 +113,75 @@ const Home = () => {
       {searchedName && (
         <>
           <h2>Results for: {searchedName}</h2>
+          
+          {/* ✅ Added Title with Dynamic Background Color */}
+          {searchResults.length > 0 && (() => {
+            const overallRating = (
+              searchResults.reduce((sum, review) => sum + review.rating, 0) /
+              searchResults.length
+            ).toFixed(1);
+
+            // ✅ Set background color based on rating
+            const getColor = (rating) => {
+              if (rating >= 7.5) return "green";
+              if (rating >= 4) return "yellow";
+              return "red";
+            };
+
+            return (
+              <h3
+                style={{
+                  backgroundColor: getColor(overallRating),
+                  color: "black",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  display: "inline-block",
+                  fontWeight: "bold",
+                }}
+              >
+                {searchResults[0].name} - Overall Rating: {overallRating}/10
+              </h3>
+            );
+          })()}
 
           <div className="search-results">
-  {searchResults.length === 0 ? (
-    <p>No results found</p>
-  ) : (
-    <div className="review-list">
-      {searchResults.map((review) => (
-        <div key={review._id || review.id} className="review-card">
-          <h3>{review.name}</h3>
-          <p>Rating: {review.rating}/10</p>
-          <p>Tag: {review.tag}</p>
-          <p>{review.review}</p>
+            {searchResults.length === 0 ? (
+              <p>No results found</p>
+            ) : (
+              <div className="review-list">
+                {searchResults.map((review) => (
+                  <div key={review._id || review.id} className="review-card">
+                    <h3>{review.name}</h3>
+                    {/* ✅ Updated Rating Styling - Small Colored Box */}
+                    <p>
+                      Rating:{" "}
+                      <span
+                        style={{
+                          backgroundColor: getRatingColor(review.rating),
+                          color: "white",
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontWeight: "bold",
+                          display: "inline-block",
+                        }}
+                      >
+                        {review.rating}/10
+                      </span>
+                    </p>
+                    <p>Tag: {review.tag}</p>
+                    <p>{review.review}</p>
 
-          <button
-            className="pay-button"
-            onClick={() => {
-              console.log("🛒 Pay Now clicked for review:", review._id);
-              setSelectedReviewId(review._id);
-            }}
-          >
-            Pay Now ($0.99 to Remove)
-          </button>
-        </div>
-      ))}
-    </div>
-  )}
-</div>
+                    <button
+                      className="pay-button"
+                      onClick={() => setSelectedReviewId(review._id)}
+                    >
+                      Pay Now ($0.99 to Remove)
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {selectedReviewId && (
             <PaymentForm
@@ -173,34 +222,33 @@ const Home = () => {
         </>
       )}
 
-      <h2>Most Recent Reviews</h2> {/* ✅ Added Title for Recent Reviews */}
+      <h2>Most Recent Reviews</h2>
       <div className="reviews-list">
         {reviews.map((review) => (
           <div key={review._id || review.id} className="review-card">
             <h3>{review.name}</h3>
-            <p>Rating: {review.rating}/10</p>
+            {/* ✅ Small Colored Box Around Rating */}
+            <p>
+              Rating:{" "}
+              <span
+                style={{
+                  backgroundColor: getRatingColor(review.rating),
+                  color: "white",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  fontWeight: "bold",
+                  display: "inline-block",
+                }}
+              >
+                {review.rating}/10
+              </span>
+            </p>
             <p>Tag: {review.tag}</p>
             <p>{review.review}</p>
-
-            {/* ✅ Added Pay Button to Recent Reviews */}
-            <button
-              className="pay-button"
-              onClick={() => setSelectedReviewId(review._id)}
-            >
-              Pay Now ($0.99 to Remove)
-            </button>
           </div>
         ))}
       </div>
 
-      {selectedReviewId && (
-        <PaymentForm
-          ratingId={selectedReviewId}
-          onSuccess={() => setSelectedReviewId(null)}
-        />
-      )}
-
-      {/* ✅ Add Footer Here */}
       <Footer />
     </div>
   );
